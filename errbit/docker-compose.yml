@@ -1,0 +1,29 @@
+version: '3'
+services:
+  errbit:
+    image: errbit/errbit
+    container_name: 'errbit'
+    restart: always
+    ports:
+      - "127.0.0.1:80:8080"
+    depends_on:
+      - mongo
+    environment:
+      PORT: 8080
+      RACK_ENV: production
+      MONGO_URL: mongodb://mongo:27017/errbit
+      SECRET_KEY_BASE: "<your secret key>"
+      ERRBIT_HOST: "errbit.example.com"
+      ERRBIT_PROTOCOL: "https"
+      GITHUB_AUTHENTICATION: "true"
+      GITHUB_CLIENT_ID: "<your github client id>"
+      GITHUB_SECRET: "<your github secret>"
+      ERRBIT_ADMIN_EMAIL: "<the email for your errbit admin account>"
+      ERRBIT_ADMIN_PASSWORD: "<the password for your errbit admin account>"
+
+  mongo:
+    image: mongo:4.1
+    container_name: 'errbit-mongodb'
+    restart: always
+    ports:
+      - "27017"
