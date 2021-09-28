@@ -1,0 +1,18 @@
+version: '2.0'
+services:
+  mysql:
+    image: 'mysql:latest'
+    container_name: 'mysql'
+    volumes:
+      - 'db_data:/var/lib/mysql'
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: password
+    networks:
+      - databases
+volumes:
+  db_data: null
+networks:
+  databases:
+    external:
+      name: databases
