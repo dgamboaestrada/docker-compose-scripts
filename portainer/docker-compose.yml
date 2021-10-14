@@ -1,0 +1,10 @@
+version: '2.0'
+services:
+  portrain:
+    ports:
+      - "9000:9000"
+    image: 'portainer/portainer-ce'
+    container_name: 'portrain'
+    volumes:
+      - '/var/run/docker.sock:/var/run/docker.sock'
+    restart: always
