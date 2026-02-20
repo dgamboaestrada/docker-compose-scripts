@@ -1,0 +1,41 @@
+services:
+  prometheus:
+    image: prom/prometheus:latest
+    container_name: prometheus
+    user: "65534"
+    volumes:
+      - ./prometheus.yml:/etc/prometheus/prometheus.yml
+      - ./data/prometheus:/prometheus
+    ports:
+      - 9090:9090
+
+  grafana:
+    image: grafana/grafana-oss:latest
+    container_name: grafana
+    ports:
+      - 3000:3000
+    environment:
+      - GF_SECURITY_ADMIN_PASSWORD=admin
+    user: "472" # Grafana runs as user 472 in the container
+    volumes:
+      - ./data/grafana:/var/lib/grafana
+
+  node-exporter:
+    image: prom/node-exporter:latest
+    container_name: node-exporter
+    restart: unless-stopped
+    volumes:
+      # Mapeamos los archivos del Kernel de la Asus para que el contenedor pueda leerlos
+      - /proc:/host/proc:ro  # Datos de CPU, procesos y carga
+      - /sys:/host/sys:ro    # Datos de hardware, temperatura y frecuencias
+      - /:/rootfs:ro         # Acceso a los discos reales para medir espacio libre
+    command:
+      # Indicamos al agente que busque los datos en las rutas que mapeamos arriba
+      - '--path.procfs=/host/proc'
+      - '--path.sysfs=/host/sys'
+      - '--path.rootfs=/rootfs'
+      - '--collector.filesystem.mount-points-exclude=^/(sys|proc|dev|host|etc)($$|/)'
+    ports:
+      - 9100:9100
+    # Nota: No necesita puerto público (9100) si solo Prometheus lo va a leer internamente,
+    # pero puedes agregarlo si quieres verificar los datos crudos en tu navegador.
