@@ -8,6 +8,11 @@ services:
       - ./data/prometheus:/prometheus
     ports:
       - 9090:9090
+    command:
+      - '--config.file=/etc/prometheus/prometheus.yml'
+      - '--storage.tsdb.path=/prometheus'
+      - '--storage.tsdb.retention.time=15d' # Guarda solo 15 días
+      - '--storage.tsdb.retention.size=2GB' # No uses más de 2GB de disco
 
   grafana:
     image: grafana/grafana-oss:latest
